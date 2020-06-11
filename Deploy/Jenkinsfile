@@ -34,7 +34,7 @@ pipeline {
 
 		stage('Set Current Kubectl Context') {
 			steps {
-				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+				withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'jenkins', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh '''
 						aws eks update-kubeconfig --name blue-green  --region us-east-2
 						kubectl config use-context arn:aws:eks:us-east-2:692963223244:cluster/blue-green
@@ -45,7 +45,7 @@ pipeline {
 
 		stage('Deploy Blue Container') {
 			steps {
-				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+				withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'jenkins', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh '''
 						kubectl apply -f Deploy/blue-controller.yaml
 					'''
@@ -55,7 +55,7 @@ pipeline {
 
 		stage('Deploy Green Container') {
 			steps {
-				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+				withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'jenkins', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh '''
 						kubectl apply -f Deploy/green-controller.yaml
 					'''
@@ -65,7 +65,7 @@ pipeline {
 
 		stage('Create Service, --> Blue') {
 			steps {
-				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+				withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'jenkins', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh '''
 						kubectl apply -f Deploy/blue-service.yaml
 					'''
@@ -81,7 +81,7 @@ pipeline {
 
 		stage('CCreate Service, --> Green') {
 			steps {
-				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+				withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'jenkins', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh '''
 						kubectl apply -f Deploy/green-service.yaml
 					'''
