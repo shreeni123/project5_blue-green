@@ -1,0 +1,88 @@
+pipeline {
+	agent any
+	stages {
+
+		stage('Linting') {
+			steps {
+				sh 'tidy -q -e *.html'
+			}
+		}
+		
+		stage('Build Docker Image') {
+			steps {
+				withDockerRegistry(credentialsId: 'docker') {
+					sh '''
+						docker build -t shreeni123/shree-capstone .
+					'''
+				}
+			}
+		}
+
+		stage('Push Image To Dockerhub') {
+			steps {
+				withDockerRegistry(credentialsId: 'docker') {
+					sh '''
+						docker push shreeni123/shree-capstone
+					'''
+				}
+			}
+		}
+
+		stage('Set Current Kubectl Context') {
+			steps {
+				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+					sh '''
+						kubectl config use-context arn:aws:eks:us-east-2:692963223244:cluster/blue-green
+					'''
+				}
+			}
+		}
+
+		stage('Deploy Blue Container') {
+			steps {
+				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+					sh '''
+						kubectl apply -f blue-controller.yaml
+					'''
+				}
+			}
+		}
+
+		stage('Deploy Green Container') {
+			steps {
+				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+					sh '''
+						kubectl apply -f green-controller.yaml
+					'''
+				}
+			}
+		}
+
+		stage('Create Service, --> Blue') {
+			steps {
+				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+					sh '''
+						kubectl apply -f blue-service.yaml
+					'''
+				}
+			}
+		}
+
+		stage('User Input') {
+            steps {
+                input "Ready to redirect traffic to green?"
+            }
+        }
+
+		stage('CCreate Service, --> Green') {
+			steps {
+				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+					sh '''
+						kubectl apply -f green-service.yaml
+					'''
+				}
+			}
+		}
+
+	}
+}

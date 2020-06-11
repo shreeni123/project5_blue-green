@@ -1,0 +1,39 @@
+pipeline {
+	agent any
+	stages {
+
+		stage('Create K8S Cluster') {
+			steps {
+				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+					sh '''
+						eksctl create cluster \
+						--name blue-green \
+						--region us-east-2 \
+						--nodegroup-name standard-workers \
+						--node-type t2.micro \
+						--nodes 3 \
+						--nodes-min 1 \
+						--nodes-max 4 \
+						--ssh-access \
+						--ssh-public-key /root/.ssh/id_rsa.pub \
+						--managed
+
+					'''
+				}
+			}
+		}
+
+		
+
+		stage('Configure Kubeconfig') {
+			steps {
+				withAWS(credentials: 'jenkins', region: 'us-east-2') {
+					sh '''
+						aws eks --region us-east-2 update-kubeconfig --name blue-green
+					'''
+				}
+			}
+		}
+
+	}
+}
