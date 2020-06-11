@@ -4,7 +4,7 @@ pipeline {
 
 		stage('Linting') {
 			steps {
-				sh 'mdl *.html'
+				sh 'tidy -q -e *.html'
 			}
 		}
 		
