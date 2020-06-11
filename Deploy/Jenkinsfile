@@ -4,7 +4,7 @@ pipeline {
 
 		stage('Linting') {
 			steps {
-				sh 'cd Deploy'
+				sh '/var/lib/jenkins/workspace/deploy/Deploy'
 				sh 'html-minifier-lint index.html'
 			}
 		}
