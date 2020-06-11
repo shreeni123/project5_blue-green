@@ -47,7 +47,7 @@ pipeline {
 			steps {
 				withAWS(credentials: 'jenkins', region: 'us-east-2') {
 					sh '''
-						kubectl apply -f blue-controller.yaml
+						kubectl apply -f Deploy/blue-controller.yaml
 					'''
 				}
 			}
@@ -57,7 +57,7 @@ pipeline {
 			steps {
 				withAWS(credentials: 'jenkins', region: 'us-east-2') {
 					sh '''
-						kubectl apply -f green-controller.yaml
+						kubectl apply -f Deploy/green-controller.yaml
 					'''
 				}
 			}
@@ -67,7 +67,7 @@ pipeline {
 			steps {
 				withAWS(credentials: 'jenkins', region: 'us-east-2') {
 					sh '''
-						kubectl apply -f blue-service.yaml
+						kubectl apply -f Deploy/blue-service.yaml
 					'''
 				}
 			}
@@ -83,7 +83,7 @@ pipeline {
 			steps {
 				withAWS(credentials: 'jenkins', region: 'us-east-2') {
 					sh '''
-						kubectl apply -f green-service.yaml
+						kubectl apply -f Deploy/green-service.yaml
 					'''
 				}
 			}
