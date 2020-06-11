@@ -32,6 +32,7 @@ pipeline {
 			steps {
 				withAWS(credentials: 'jenkins', region: 'us-east-2') {
 					sh '''
+						aws eks update-kubeconfig --name blue-green  --region us-east-2
 						kubectl config use-context arn:aws:eks:us-east-2:692963223244:cluster/blue-green
 					'''
 				}
