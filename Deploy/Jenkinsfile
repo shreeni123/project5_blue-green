@@ -4,7 +4,8 @@ pipeline {
 
 		stage('Linting') {
 			steps {
-				sh 'html-minifier-lint Deploy/index.html'
+				sh 'cd Deploy'
+				sh 'html-minifier-lint index.html'
 			}
 		}
 		
