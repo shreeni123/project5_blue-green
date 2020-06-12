@@ -14,11 +14,7 @@ pipeline {
 		stage('Linting Dockerfile') {
 			steps {
 				sh 'cp Deploy/Dockerfile .'
-				withDockerRegistry(credentialsId: 'docker', url: 'https://index.docker.io/v1/')  {
-					sh '''
-						docker run --rm -i hadolint/hadolint < Dockerfile
-					'''
-				}
+				sh 'dockerlint Dockerfile'
 			}
 		}
 		
