@@ -2,7 +2,7 @@ pipeline {
 	agent any
 	stages {
 
-		stage('Linting') {
+		stage('Linting HTML file') {
 			steps {
 				
 				sh 'html-minifier-lint Deploy/index.html'
